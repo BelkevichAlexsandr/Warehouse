@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:13.4
+    environment:
+      PGDATA: /data/postgres
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+    volumes:
+      - postgres_data:/data/postgres
+      - ./dumps:/tmp/dumps
+    ports:
+      - 6432:5432
+
+volumes:
+  postgres_data:

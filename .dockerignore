@@ -1,0 +1,13 @@
+.ci
+cicd
+.gitlab-ci*
+*.tmpl
+Dockerfile*
+docker-compose*
+.env*
+cicd*
+*.tar.gz
+docker-compose*
+.gitignore
+.git
+mes
