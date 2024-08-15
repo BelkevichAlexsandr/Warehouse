@@ -1,22 +1,9 @@
 from abc import ABC
-from typing import (
-    Any,
-    Iterable,
-    List,
-    Literal,
-    Optional,
-    Type,
-    TypeVar,
-)
+from logging import Logger
+from typing import Any, Iterable, List, Literal, Optional, Type, TypeVar
 
 from pydantic import BaseModel
-from sqlalchemy import (
-    delete,
-    insert,
-    select,
-    text,
-    update,
-)
+from sqlalchemy import delete, insert, select, text, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -27,6 +14,8 @@ from app.databases.connect import Base
 
 Model = TypeVar("Model", bound="Base")
 BM = TypeVar("BM", bound=BaseModel)
+
+logger = Logger(__name__)
 
 
 class BaseDAO(ABC):
@@ -78,7 +67,7 @@ class BaseDAO(ABC):
         return item
 
     async def delete_item(self, item_id: int) -> bool:
-        item = await self.get_item_by_id(item_id)
+        item = await self.get_item_by_id(item_id)  # type: ignore[func-returns-value]
         if not item:
             return False
         try:
@@ -119,7 +108,7 @@ class BaseDAO(ABC):
         except SQLAlchemyError as exc:
             logger.error(exc.args)
             raise
-        return await self.get_item_by_id(item_id, **kwargs)
+        return await self.get_item_by_id(item_id, **kwargs)  # type: ignore[func-returns-value]
 
     async def update_item(
         self,
@@ -131,7 +120,7 @@ class BaseDAO(ABC):
         **kwargs: TKwargs,
     ) -> Optional[Model]:
         if isinstance(item, BaseModel):
-            item: dict[str, Any] = item.model_dump(exclude_none=exclude_none, mode=mode)
+            item: dict[str, Any] = item.model_dump(exclude_none=exclude_none, mode=mode)  # type: ignore[no-redef]
         try:
             await self.session.execute(
                 update(self.model).where(self.model.id == item_id).values(**item),
@@ -140,7 +129,7 @@ class BaseDAO(ABC):
         except SQLAlchemyError as exc:
             logger.error(exc.args)
             raise
-        return await self.get_item_by_id(item_id, **kwargs)
+        return await self.get_item_by_id(item_id, **kwargs)  # type: ignore[func-returns-value]
 
     async def _upd_sequence(self):
         query = await self.session.execute(select(func.max(self.model.id)))

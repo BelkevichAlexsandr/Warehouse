@@ -1,24 +1,9 @@
 from contextlib import asynccontextmanager
-from typing import (
-    Any,
-    AsyncGenerator,
-)
+from typing import Any, AsyncGenerator
 
-from fastapi import (
-    Depends,
-    HTTPException,
-    Request,
-    status,
-)
-from fastapi.security import (
-    HTTPAuthorizationCredentials,
-    HTTPBearer,
-)
-from httpx import (
-    AsyncClient,
-    ConnectError,
-    ConnectTimeout,
-)
+from fastapi import Depends, HTTPException, Request, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from httpx import AsyncClient, ConnectError, ConnectTimeout
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -61,13 +46,16 @@ async def auth_secure(
     if token:
         auth_service_data = {
             "endpoint_method": request.method.upper(),
-            "endpoint_route": request.url.path.replace(settings.MS_ROUTE_MAP_ROOT_PATH, ""),
+            "endpoint_route": request.url.path.replace(
+                settings.MS_ROUTE_MAP_ROOT_PATH,
+                "",  # type: ignore[attr-defined]
+            ),
         }
         headers = {"Authorization": f"{token.scheme} {token.credentials}"}
         async with AsyncClient(verify=False) as client:
             try:
                 to_auth_service_response = await client.post(
-                    f"{settings.MS_AUTH_DOMAIN}/v1/auth/endpoint_access/",
+                    f"{settings.MS_AUTH_DOMAIN}/v1/auth/endpoint_access/",  # type: ignore[attr-defined]
                     headers=headers,
                     json=auth_service_data,
                     timeout=3,
@@ -96,7 +84,10 @@ async def auth_secure_user_data(
     if token:
         auth_service_data = {
             "endpoint_method": request.method.upper(),
-            "endpoint_route": request.url.path.replace(settings.MS_ROUTE_MAP_ROOT_PATH, ""),
+            "endpoint_route": request.url.path.replace(
+                settings.MS_ROUTE_MAP_ROOT_PATH,
+                "",  # type: ignore[attr-defined]
+            ),
         }
         if request.path_params:
             auth_service_data["path_params"] = request.path_params  # type: ignore[assignment]
@@ -104,7 +95,7 @@ async def auth_secure_user_data(
         async with AsyncClient(verify=False) as client:
             try:
                 to_auth_service_response = await client.post(
-                    f"{settings.MS_AUTH_DOMAIN}/v1/auth/endpoint_access/",
+                    f"{settings.MS_AUTH_DOMAIN}/v1/auth/endpoint_access/",  # type: ignore[attr-defined]
                     headers=headers,
                     json=auth_service_data,
                     timeout=3,

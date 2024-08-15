@@ -1,14 +1,7 @@
 import datetime
 
-from sqlalchemy import (
-    ForeignKey,
-    func,
-)
-from sqlalchemy.orm import (
-    Mapped,
-    mapped_column,
-    relationship,
-)
+from sqlalchemy import ForeignKey, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.databases.connect import Base
 from app.models.types import SerialNumberStatusEnum
@@ -35,7 +28,9 @@ class SerialNumber(BaseClass, Base):
     __tablename__ = "serial_number"
 
     name: Mapped[str]
-    status: Mapped[SerialNumberStatusEnum] = mapped_column(default=SerialNumberStatusEnum.WAREHOUSE)
+    status: Mapped[SerialNumberStatusEnum] = mapped_column(
+        default=SerialNumberStatusEnum.WAREHOUSE,
+    )
     data_input: Mapped[datetime.date] = mapped_column(default=func.now())
     data_output: Mapped[datetime.date | None]
     employee_id: Mapped[int | None]
@@ -59,12 +54,12 @@ class Warehouse(BaseClass, Base):
     product_count_in_stock: Mapped[int]
     product_count_out: Mapped[int | None]
 
-    manufacturer: Mapped["Manufacturer"] = relationship(back_populates='warehouses')
+    manufacturer: Mapped["Manufacturer"] = relationship(back_populates="warehouses")
     serial_numbers: Mapped[list["SerialNumber"]] = relationship(
         secondary=WarehouseSerialNumber.__tablename__,
         back_populates="warehouses",
     )
-    supplier: Mapped["Supplier"] = relationship(back_populates='warehouses')
+    supplier: Mapped["Supplier"] = relationship(back_populates="warehouses")
 
 
 class Supplier(BaseClass, Base):
@@ -89,4 +84,3 @@ class Manufacturer(BaseClass, Base):
     email: Mapped[str]
 
     warehouses: Mapped[list["Warehouse"]] = relationship(back_populates="manufacturer")
-

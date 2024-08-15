@@ -21,14 +21,18 @@ class FilterToQueryMapper:
             if isinstance(fields, str):
                 fields = (fields,)
 
-            if not all([field in self.body_filters.model_fields.keys() for field in fields]):
+            if not all(
+                [field in self.body_filters.model_fields.keys() for field in fields],
+            ):
                 logger.warning(
                     f"fields {fields} does not exists in model {self.body_filters.__class__.__name__}",
                 )
                 continue
 
             if not field_map_value:
-                logger.warning(f"field_map_value {field_map_value} for fields {fields} is falsy")
+                logger.warning(
+                    f"field_map_value {field_map_value} for fields {fields} is falsy",
+                )
                 continue
 
             body_filters_dict = self.body_filters.model_dump()
