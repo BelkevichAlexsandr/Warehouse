@@ -1,14 +1,13 @@
 from typing import Annotated
 
-from fastapi import (
-    APIRouter,
-    Depends,
-    status, Query,
-)
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.depends import get_db
-from app.schemas.supplier import SupplierFullModel, SupplierModel, PatchSupplierModel
+from app.schemas.supplier import (
+    PatchSupplierModel, SupplierFullModel,
+    SupplierModel,
+)
 from app.services.supplier import SupplierService
 
 router = APIRouter(
@@ -24,10 +23,17 @@ async def get_suppliers(
     need_id: Annotated[list[int], Query()] = None,
     db: AsyncSession = Depends(get_db),
 ):
-    return await SupplierService(db=db).get_all_suppliers(search=search, need_id=need_id)
+    return await SupplierService(db=db).get_all_suppliers(
+        search=search,
+        need_id=need_id,
+    )
 
 
-@router.get("/{item_id}/", status_code=status.HTTP_200_OK, response_model=SupplierFullModel)
+@router.get(
+    "/{item_id}/",
+    status_code=status.HTTP_200_OK,
+    response_model=SupplierFullModel,
+)
 async def get_one_supplier(
     item_id: int,
     db: AsyncSession = Depends(get_db),
@@ -53,7 +59,10 @@ async def patch_supplier(
     request: PatchSupplierModel,
     db: AsyncSession = Depends(get_db),
 ):
-    return await SupplierService(db=db).update_supplier(item_id=item_id, request=request)
+    return await SupplierService(db=db).update_supplier(
+        item_id=item_id,
+        request=request,
+    )
 
 
 @router.delete("/{item_id}/", status_code=status.HTTP_204_NO_CONTENT)

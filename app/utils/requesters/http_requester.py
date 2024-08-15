@@ -1,24 +1,14 @@
-from abc import (
-    ABC,
-    abstractmethod,
-)
+from abc import ABC, abstractmethod
 from enum import Enum
 from json import JSONDecodeError
 from logging import getLogger
 from typing import Any
 
-from fastapi import (
-    HTTPException,
-    status,
-)
+from fastapi import HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 from httpx import (
-    AsyncClient,
-    ConnectError,
-    ConnectTimeout,
-    HTTPStatusError,
-    Limits,
-    ReadTimeout,
+    AsyncClient, ConnectError, ConnectTimeout, HTTPStatusError,
+    Limits, ReadTimeout,
 )
 from opentelemetry.propagate import inject
 
@@ -77,7 +67,13 @@ class BaseHTTPRequester(ABC):
         url = f"/v{api_version}/{router}/"
         return await self._send_request(url, **kwargs)
 
-    async def get_by_id(self, item_id: int, router: str, api_version: int = 1, **kwargs):
+    async def get_by_id(
+        self,
+        item_id: int,
+        router: str,
+        api_version: int = 1,
+        **kwargs,
+    ):
         url = f"/v{api_version}/{router}/{item_id}/"
         return await self._send_request(url, **kwargs)
 
@@ -150,9 +146,12 @@ class BaseHTTPRequester(ABC):
             detail = "Error when sending a request to another microservices"
             if _exception_detail:
                 detail = _exception_detail
-            elif response.status_code < status.HTTP_500_INTERNAL_SERVER_ERROR and isinstance(
-                response.json(),
-                dict,
+            elif (
+                response.status_code < status.HTTP_500_INTERNAL_SERVER_ERROR
+                and isinstance(
+                    response.json(),
+                    dict,
+                )
             ):
                 detail = response.json().get("detail")
 

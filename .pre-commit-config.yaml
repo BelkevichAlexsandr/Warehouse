@@ -9,15 +9,6 @@ repos:
     hooks:
       - id: isort
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.4
-    hooks:
-      - id: ruff
-        types_or: [ python, pyi ]
-        args: [ --fix ]
-      - id: ruff-format
-        types_or: [ python, pyi ]
-
   - repo: https://github.com/asottile/add-trailing-comma
     rev: v2.4.0
     hooks:

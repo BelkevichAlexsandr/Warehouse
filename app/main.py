@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import supplier, manufacturer
+from app.routers import manufacturer, supplier
 
 app = FastAPI(
     title="NameProject",
