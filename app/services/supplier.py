@@ -83,4 +83,3 @@ class SupplierService:
                     detail=f'Поставщик с таким id {item_id} не существует. Удаление не возможно.',
                 )
             await dao.update_item(item_id=item_id, item={'deleted_at': datetime.datetime.now()})
-

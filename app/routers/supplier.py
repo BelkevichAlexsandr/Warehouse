@@ -13,7 +13,7 @@ from app.services.supplier import SupplierService
 
 router = APIRouter(
     prefix="/v1/supplier",
-    tags=["auth"],
+    tags=["supplier"],
     responses={404: {"description": "Not found"}},
 )
 
@@ -28,7 +28,7 @@ async def get_suppliers(
 
 
 @router.get("/{item_id}/", status_code=status.HTTP_200_OK, response_model=SupplierFullModel)
-async def get_one_role(
+async def get_one_supplier(
     item_id: int,
     db: AsyncSession = Depends(get_db),
 ):
@@ -36,7 +36,7 @@ async def get_one_role(
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=SupplierFullModel)
-async def create_new_role(
+async def create_new_supplier(
     request: SupplierModel,
     db: AsyncSession = Depends(get_db),
 ):
@@ -48,7 +48,7 @@ async def create_new_role(
     status_code=status.HTTP_200_OK,
     response_model=SupplierFullModel,
 )
-async def patch_role(
+async def patch_supplier(
     item_id: int,
     request: PatchSupplierModel,
     db: AsyncSession = Depends(get_db),
@@ -57,7 +57,7 @@ async def patch_role(
 
 
 @router.delete("/{item_id}/", status_code=status.HTTP_204_NO_CONTENT)
-async def hard_delete_role(
+async def hard_delete_supplier(
     item_id: int,
     db: AsyncSession = Depends(get_db),
 ):
