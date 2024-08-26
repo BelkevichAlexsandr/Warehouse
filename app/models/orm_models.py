@@ -17,28 +17,24 @@ class BaseClass:
     )
 
 
-class WarehouseSerialNumber(BaseClass, Base):
-    __tablename__ = "warehouse_serial_number"
-
-    serial_number_id: Mapped[int] = mapped_column(ForeignKey("serial_number.id"))
-    warehouse_id: Mapped[int] = mapped_column(ForeignKey("warehouse.id"))
-
-
 class SerialNumber(BaseClass, Base):
     __tablename__ = "serial_number"
+
+    warehouse_id: Mapped[int] = mapped_column(ForeignKey("warehouse.id"))
 
     name: Mapped[str]
     status: Mapped[SerialNumberStatusEnum] = mapped_column(
         default=SerialNumberStatusEnum.WAREHOUSE,
     )
+    price_input: Mapped[int]
+    price_output: Mapped[int | None]
     data_input: Mapped[datetime.date] = mapped_column(default=func.now())
     data_output: Mapped[datetime.date | None]
     employee_id: Mapped[int | None]
+    buyer_id: Mapped[int | None]
+    order_id: Mapped[int | None]
 
-    warehouses: Mapped[list["Warehouse"]] = relationship(
-        secondary=WarehouseSerialNumber.__tablename__,
-        back_populates="serial_numbers",
-    )
+    warehouse: Mapped["Warehouse"] = relationship(back_populates="serial_numbers")
 
 
 class Warehouse(BaseClass, Base):
@@ -49,17 +45,15 @@ class Warehouse(BaseClass, Base):
 
     article: Mapped[str]
     name: Mapped[str]
-    price_enter: Mapped[int]
     warranty: Mapped[int]
-    product_count_in_stock: Mapped[int]
+    product_count_in_stock: Mapped[int | None]
     product_count_out: Mapped[int | None]
+    position: Mapped[str | None]
+    description: Mapped[str | None]
 
     manufacturer: Mapped["Manufacturer"] = relationship(back_populates="warehouses")
-    serial_numbers: Mapped[list["SerialNumber"]] = relationship(
-        secondary=WarehouseSerialNumber.__tablename__,
-        back_populates="warehouses",
-    )
     supplier: Mapped["Supplier"] = relationship(back_populates="warehouses")
+    serial_numbers: Mapped[list["SerialNumber"]] = relationship(back_populates="warehouse")
 
 
 class Supplier(BaseClass, Base):
@@ -79,8 +73,5 @@ class Manufacturer(BaseClass, Base):
 
     name: Mapped[str]
     country: Mapped[str]
-    address: Mapped[str]
-    phone: Mapped[str]
-    email: Mapped[str]
 
     warehouses: Mapped[list["Warehouse"]] = relationship(back_populates="manufacturer")

@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBasic
 
-from app.routers import manufacturer, supplier
+from app.routers import manufacturer, supplier, warehouse, serial_number
 
 app = FastAPI(
-    title="NameProject",
+    title="Warehouse",
     version="0.0.1",
 )
 
@@ -18,3 +19,5 @@ app.add_middleware(
 
 app.include_router(supplier.router)
 app.include_router(manufacturer.router)
+app.include_router(warehouse.router)
+app.include_router(serial_number.router)

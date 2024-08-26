@@ -1,8 +1,9 @@
+import secrets
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator
+from typing import Any, AsyncGenerator, Annotated
 
 from fastapi import Depends, HTTPException, Request, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer, HTTPBasicCredentials, HTTPBasic
 from httpx import AsyncClient, ConnectError, ConnectTimeout
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,6 +11,8 @@ from app.config import settings
 from app.utils.engine import Engine
 
 token_auth_scheme = HTTPBearer()
+
+security = HTTPBasic()
 
 
 async def get_db() -> AsyncGenerator:
@@ -117,3 +120,21 @@ async def auth_secure_user_data(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Bearer token must be provided",
     )
+
+
+def get_current_username(
+    credentials: Annotated[HTTPBasicCredentials, Depends(security)],
+):
+    current_username_bytes = credentials.username.encode("utf8")
+    correct_username_bytes = bytes(settings.MS_WAREHOUSE_USER_NAME.encode("utf8"))
+    is_correct_username = secrets.compare_digest(current_username_bytes, correct_username_bytes)
+    current_password_bytes = credentials.password.encode("utf8")
+    correct_password_bytes = bytes(settings.MS_WAREHOUSE_USER_PASSWORD.encode("utf8"))
+    is_correct_password = secrets.compare_digest(current_password_bytes, correct_password_bytes)
+    if not (is_correct_username and is_correct_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return credentials.username

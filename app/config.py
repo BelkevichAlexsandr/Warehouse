@@ -5,11 +5,14 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    HOST: str
-    PORT: str
-    DB: str
-    PASSWORD: str
-    USER: str
+    MS_WAREHOUSE_HOST: str
+    MS_WAREHOUSE_PORT: str
+    MS_WAREHOUSE_DB: str
+    MS_WAREHOUSE_PASSWORD: str
+    MS_WAREHOUSE_USER: str
+
+    MS_WAREHOUSE_USER_NAME: str
+    MS_WAREHOUSE_USER_PASSWORD: str
 
     SQLALCHEMY_ENGINE_CONFIG: dict = {
         "future": True,
@@ -19,11 +22,11 @@ class Settings(BaseSettings):
 
     def __init__(self):
         super().__init__()
-        self.POSTGRES_HOST = self.HOST
-        self.POSTGRES_PORT = self.PORT
-        self.POSTGRES_DB = self.DB
-        self.POSTGRES_PASSWORD = self.PASSWORD
-        self.POSTGRES_USER = self.USER
+        self.POSTGRES_HOST = self.MS_WAREHOUSE_HOST
+        self.POSTGRES_PORT = self.MS_WAREHOUSE_PORT
+        self.POSTGRES_DB = self.MS_WAREHOUSE_DB
+        self.POSTGRES_PASSWORD = self.MS_WAREHOUSE_PASSWORD
+        self.POSTGRES_USER = self.MS_WAREHOUSE_USER
 
     @property
     def get_db_uri(self) -> str:

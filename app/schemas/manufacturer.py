@@ -8,9 +8,6 @@ from app.schemas import ID_INT
 class ManufacturerModel(BaseModel):
     name: str
     country: str
-    address: str
-    phone: str
-    email: str
 
 
 class ManufacturerFullModel(ManufacturerModel):
@@ -20,9 +17,6 @@ class ManufacturerFullModel(ManufacturerModel):
 class PatchManufacturerModel(BaseModel):
     name: str | None = None
     country: str | None = None
-    address: str | None = None
-    phone: str | None = None
-    email: str | None = None
 
 
 class DeleteManufacturer(BaseModel):
