@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPBasic
 
 from app.routers import manufacturer, supplier, warehouse, serial_number
 
@@ -21,3 +20,8 @@ app.include_router(supplier.router)
 app.include_router(manufacturer.router)
 app.include_router(warehouse.router)
 app.include_router(serial_number.router)
+
+
+@app.get('/')
+def user_lost():
+    return "Default PAGE!"
