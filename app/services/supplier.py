@@ -30,12 +30,18 @@ class SupplierService:
 
     async def get_supplier(self, item_id: int):
         async with SupplierDAO(self.db) as dao:
-            return await dao.get_one(
+            result = await dao.get_one(
                 where=[
                     dao.model.id == item_id,
                     dao.model.deleted_at.is_(None),
                 ],
             )
+            if not result:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f'Supplier.id {item_id} not found'
+                )
+            return result
 
     async def create_supplier(self, request: SupplierModel):
         async with SupplierDAO(self.db) as dao:

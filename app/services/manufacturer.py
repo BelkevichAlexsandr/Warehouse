@@ -30,12 +30,18 @@ class ManufacturerService:
 
     async def get_manufacturer(self, item_id: int):
         async with ManufacturerDAO(self.db) as dao:
-            return await dao.get_one(
+            result = await dao.get_one(
                 where=[
                     dao.model.id == item_id,
                     dao.model.deleted_at.is_(None),
                 ],
             )
+            if not result:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f'Manufacturer.id {item_id} not found'
+                )
+            return result
 
     async def create_manufacturer(self, request: ManufacturerModel):
         async with ManufacturerDAO(self.db) as dao:

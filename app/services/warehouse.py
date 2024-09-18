@@ -41,12 +41,18 @@ class WarehouseService:
 
     async def get_warehouse(self, item_id: int):
         async with WarehouseDAO(self.db) as dao:
-            return await dao.get_one(
+            result = await dao.get_one(
                 where=[
                     dao.model.id == item_id,
                     dao.model.deleted_at.is_(None),
                 ],
             )
+            if not result:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f'Warehouse.id {item_id} not found'
+                )
+            return result
 
     async def create_warehouse(self, request: WarehouseModel):
         async with WarehouseDAO(self.db) as dao:
