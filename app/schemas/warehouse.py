@@ -33,4 +33,4 @@ class PatchWarehouseModel(BaseModel):
 
 
 class WarehouseWithSerialNumberModel(WarehouseFullModel):
-    serial_numbers: list[SerialNumberFullModel]
+    serial_numbers: list[SerialNumberFullModel] | None = None
